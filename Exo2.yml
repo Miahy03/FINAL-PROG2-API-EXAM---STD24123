@@ -1,0 +1,105 @@
+openapi: 3.0.3
+info:
+  title: STD24123
+  description: "This is a specification of STD24123"
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000
+
+paths:
+  /health:
+    get:
+      summary: "Retourne 'Ok'"
+      responses:
+        '200':
+          description: "Réponse Ok"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Ok"
+
+  /phones:
+    get:
+      summary: "Récupérer la liste des téléphones"
+      responses:
+        '200':
+          description: "Liste des téléphones"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Phone'
+
+    post:
+      summary: "Créer un nouveau téléphone"
+      requestBody:
+        description: "Ajoute un téléphone dans la liste"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Phone'
+      responses:
+        '201':
+          description: "Téléphone créé"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Phone'
+
+  /phones/{id}:
+    get:
+      summary: "Récupérer un téléphone par identifiant"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "L'identifiant du téléphone"
+      responses:
+        '200':
+          description: "Détails du téléphone"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Phone'
+        '404':
+          description: "Téléphone non trouvé"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Phone not found"
+
+components:
+  schemas:
+    Characteristic:
+      type: object
+      properties:
+        ram_memory:
+          type: integer
+          example: 8
+        rom_memory:
+          type: integer
+          example: 256
+
+    Phone:
+      type: object
+      properties:
+        identifier:
+          type: string
+          example: "1234521"
+        brand:
+          type: string
+          example: "iphone"
+        model:
+          type: string
+          example: "15 pro Max"
+        characteristics:
+          $ref: '#/components/schemas/Characteristic'
